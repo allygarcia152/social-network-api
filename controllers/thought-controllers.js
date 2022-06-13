@@ -62,12 +62,22 @@ const thoughtController = {
       new: true,
       runValidators: true,
     })
-      .then((dbThoughtData) => {
-        if (!dbThoughtData) {
+      .then((dbUserData) => {
+        if (!dbUserData) {
           res.status(404).json({ message: "No thought found with this id :(" });
+        }
+        return User.findOneAndUpdate(
+          { _id: params.userId },
+          { $push: { thoughts: params.thoughtId } },
+          { new: true }
+        );
+      })
+      .then(dbUserData => {
+        if (!dbUserData) {
+          res.status(404).json({ message: 'No user found with this id :(' });
           return;
         }
-        res.json(dbThoughtData);
+        res.json(dbUserData);
       })
       .catch((err) => res.status(400).json(err));
   },
